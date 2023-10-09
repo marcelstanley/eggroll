@@ -37,7 +37,6 @@ func main() {
 	client := eggroll.NewClient()
 
 	inputs := []any{
-		//	million.Init{},
 		million.Paint{image.Point{0, 0}, color.RGBA{255, 0, 0, 255}},
 		million.Paint{image.Point{0, 0}, color.RGBA{255, 0, 0, 255}},
 		million.Paint{image.Point{999, 999}, color.RGBA{255, 255, 0, 0}},

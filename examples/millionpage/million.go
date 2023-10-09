@@ -9,10 +9,11 @@ import (
 	"image/color"
 )
 
-// XXX Remove
-// Input type Init forces the initialization of the DApp state
-type Init struct {
-}
+const (
+	MAX_VALUE = 999
+	SUCCESS   = "S"
+	FAILURE   = "F"
+)
 
 // Input type Paint specifies a pixel to be painted
 type Paint struct {
