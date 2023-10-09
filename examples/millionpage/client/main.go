@@ -42,22 +42,21 @@ func main() {
 		million.Paint{image.Point{999, 999}, color.RGBA{255, 255, 0, 0}},
 	}
 	for _, input := range inputs {
-		log.Printf("Sending input %#v\n", input)
-		Check(client.SendGeneric(ctx, input))
+		err := client.SendGeneric(ctx, input)
+		if err != nil {
+			log.Fatalf("failed to send input: %v", err)
+		}
 	}
 
-	log.Println("Waiting for inputs to be processed")
-	Check(client.WaitFor(ctx, 2))
+	result, err := client.WaitFor(ctx, 2)
+	if err != nil {
+		log.Fatalf("failed to wait for input: %v", err)
+	}
 
-	Check(client.Sync(ctx))
-	var contract million.Contract
-	Check(client.ReadState(&contract))
+	log.Println("Map: ", result.Result)
 
-	log.Println("Map: ", contract.Pixels.ToBytes())
-
-	logs := Must(client.Logs(ctx))
 	log.Println("Logs:")
-	for _, msg := range logs {
+	for _, msg := range result.Logs {
 		log.Print(">", msg)
 	}
 }
