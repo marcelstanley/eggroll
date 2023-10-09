@@ -14,6 +14,12 @@ import (
 	"github.com/kelindar/bitmap"
 )
 
+const (
+	MAX     = 999
+	SUCCESS = "S"
+	FAILURE = "F"
+)
+
 // DApp contract
 type MillionContract struct {
 	eggroll.DefaultContract
@@ -24,8 +30,6 @@ func (c *MillionContract) Clear() {
 	c.Pixels.Clear()
 }
 
-const MAX = 999
-
 func (c *MillionContract) Paint(p image.Point) error {
 	if p.X < 0 || p.Y < 0 || p.X > MAX || p.Y > MAX {
 		return fmt.Errorf("invalid pixel coordinates (%v, %v)", p.X, p.Y)
@@ -33,7 +37,7 @@ func (c *MillionContract) Paint(p image.Point) error {
 
 	bit := uint32(p.X + p.Y*(MAX+1))
 	if c.Pixels.Contains(bit) {
-		return fmt.Errorf("pixels coordinates (%v, %v) unavailable", p.X, p.Y)
+		return fmt.Errorf("pixel coordinates (%v, %v) unavailable", p.X, p.Y)
 	}
 
 	c.Pixels.Set(bit)
@@ -54,14 +58,14 @@ func (c *MillionContract) Advance(env *eggroll.Env, input any) ([]byte, error) {
 		env.Logf("Cleared DApp state")
 	case *million.Paint:
 		if err := c.Paint(input.Point); err != nil {
-			return nil, err
+			return []byte(FAILURE), err
 		}
-		env.Logf("Painted pixel '%v'\n", input.Point)
+		env.Logf("Painted pixel %v\n", input.Point)
 	default:
-		return nil, fmt.Errorf("invalid input")
+		return []byte(FAILURE), fmt.Errorf("invalid input")
 	}
 
-	return /*[]byte("Y")*/ c.Pixels.ToBytes(), nil // Returning the bitmap because we can
+	return []byte(SUCCESS), nil
 }
 
 func main() {

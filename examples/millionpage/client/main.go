@@ -52,16 +52,18 @@ func main() {
 		}
 	}
 
-	log.Println("> Waiting...")
-	result, err := client.WaitFor(ctx, 3)
+	log.Println("> Waiting for last input to be processed...")
+	_, err := client.WaitFor(ctx, len(inputs)-1)
 	if err != nil {
 		log.Fatalf("failed to wait for input: %v", err)
 	}
 
-	log.Println("Map: ", result.Result)
-
+	results, err := client.Sync(ctx, nil)
+	if err != nil {
+		log.Fatalf("failed to read results: ", err)
+	}
 	log.Println("Logs:")
-	for _, msg := range result.Logs {
-		log.Print(">", msg)
+	for _, result := range results {
+		log.Print(">", result.Logs)
 	}
 }
