@@ -9,6 +9,7 @@ import (
 	"image/color"
 )
 
+// XXX Remove
 // Input type Init forces the initialization of the DApp state
 type Init struct {
 }

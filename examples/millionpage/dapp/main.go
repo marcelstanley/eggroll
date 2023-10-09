@@ -20,13 +20,23 @@ type MillionContract struct {
 	Pixels bitmap.Bitmap
 }
 
-func (c MillionContract) Clear() {
+func (c *MillionContract) Clear() {
 	c.Pixels.Clear()
 }
 
-func (c MillionContract) Paint(p image.Point) error {
-	c.Pixels.Set(uint32(p.X + p.Y*1000))
-	//fmt.Errorf("invalid coordinates")
+const MAX = 999
+
+func (c *MillionContract) Paint(p image.Point) error {
+	if p.X < 0 || p.Y < 0 || p.X > MAX || p.Y > MAX {
+		return fmt.Errorf("invalid pixel coordinates (%v, %v)", p.X, p.Y)
+	}
+
+	bit := uint32(p.X + p.Y*(MAX+1))
+	if c.Pixels.Contains(bit) {
+		return fmt.Errorf("pixels coordinates (%v, %v) unavailable", p.X, p.Y)
+	}
+
+	c.Pixels.Set(bit)
 	return nil
 }
 
@@ -41,21 +51,17 @@ func (c *MillionContract) Advance(env *eggroll.Env, input any) ([]byte, error) {
 	switch input := input.(type) {
 	case *million.Init:
 		c.Clear()
-		env.Logf("received input Init. State= %v", c)
-
+		env.Logf("Cleared DApp state")
 	case *million.Paint:
-		// TODO Check for valid coordinates. Only free pixels are available
-		env.Logf("received input Paint with '%v'\n", input)
 		if err := c.Paint(input.Point); err != nil {
-			return nil, fmt.Errorf("invalid coordinates")
+			return nil, err
 		}
-		env.Logf("DApp state= %v", c)
+		env.Logf("Painted pixel '%v'\n", input.Point)
 	default:
 		return nil, fmt.Errorf("invalid input")
 	}
 
-	env.Logf("c.Pixels.ToBytes()= %v", c.Pixels.ToBytes())
-	return []byte("x"), nil // Returning the bitmap because we can
+	return /*[]byte("Y")*/ c.Pixels.ToBytes(), nil // Returning the bitmap because we can
 }
 
 func main() {

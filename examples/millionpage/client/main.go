@@ -37,9 +37,11 @@ func main() {
 	client := eggroll.NewClient()
 
 	inputs := []any{
-		million.Init{},
+		//	million.Init{},
 		million.Paint{image.Point{0, 0}, color.RGBA{255, 0, 0, 255}},
-		//million.Paint{image.Point{999, 999}, color.RGBA{255, 255, 0, 0}},
+		million.Paint{image.Point{0, 0}, color.RGBA{255, 0, 0, 255}},
+		million.Paint{image.Point{999, 999}, color.RGBA{255, 255, 0, 0}},
+		million.Paint{image.Point{1000, 0}, color.RGBA{255, 0, 0, 255}},
 	}
 
 	for _, input := range inputs {
@@ -51,7 +53,7 @@ func main() {
 	}
 
 	log.Println("> Waiting...")
-	result, err := client.WaitFor(ctx, 1)
+	result, err := client.WaitFor(ctx, 3)
 	if err != nil {
 		log.Fatalf("failed to wait for input: %v", err)
 	}
