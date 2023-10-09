@@ -40,19 +40,22 @@ func (c *MillionContract) Decoders() []eggroll.Decoder {
 func (c *MillionContract) Advance(env *eggroll.Env, input any) ([]byte, error) {
 	switch input := input.(type) {
 	case *million.Init:
-		env.Logf("received input Init. State= %v", c)
 		c.Clear()
+		env.Logf("received input Init. State= %v", c)
 
 	case *million.Paint:
 		// TODO Check for valid coordinates. Only free pixels are available
 		env.Logf("received input Paint with '%v'\n", input)
 		if err := c.Paint(input.Point); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("invalid coordinates")
 		}
+		env.Logf("DApp state= %v", c)
 	default:
 		return nil, fmt.Errorf("invalid input")
 	}
-	return c.Pixels.ToBytes(), nil // Returning the bitmap because we can
+
+	env.Logf("c.Pixels.ToBytes()= %v", c.Pixels.ToBytes())
+	return []byte("x"), nil // Returning the bitmap because we can
 }
 
 func main() {

@@ -39,16 +39,19 @@ func main() {
 	inputs := []any{
 		million.Init{},
 		million.Paint{image.Point{0, 0}, color.RGBA{255, 0, 0, 255}},
-		million.Paint{image.Point{999, 999}, color.RGBA{255, 255, 0, 0}},
+		//million.Paint{image.Point{999, 999}, color.RGBA{255, 255, 0, 0}},
 	}
+
 	for _, input := range inputs {
+		log.Println("> Sending ", input)
 		err := client.SendGeneric(ctx, input)
 		if err != nil {
 			log.Fatalf("failed to send input: %v", err)
 		}
 	}
 
-	result, err := client.WaitFor(ctx, 2)
+	log.Println("> Waiting...")
+	result, err := client.WaitFor(ctx, 1)
 	if err != nil {
 		log.Fatalf("failed to wait for input: %v", err)
 	}
