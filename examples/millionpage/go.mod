@@ -3,7 +3,7 @@ module million
 go 1.21.1
 
 require (
-	github.com/gligneul/eggroll v0.0.0-20231007210009-bd944e56e429
+	github.com/gligneul/eggroll v0.0.0-20231008214852-7250f302c731
 	github.com/kelindar/bitmap v1.5.1
 )
 
